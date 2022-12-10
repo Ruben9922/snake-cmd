@@ -28,7 +28,7 @@ class Game:
     @property
     def size(self):
         return np.amin(np.stack([
-            self.stdscr.getmaxyx(),
+            gu.window_size(self.stdscr) - [3, 2],  # Subtracting rows/columns required by the score/hint text and borders
             Game._max_size,
         ]), axis=0)
 
@@ -100,6 +100,33 @@ class Game:
 
         return False, pellet
 
+    def draw_borders(self, base_position):
+        # TODO: Replace this with a utility function for drawing a rectangle
+        border_points = np.row_stack([
+            np.stack([
+                np.arange(self.size[0] + 2) - 1,
+                np.repeat(-1, self.size[0] + 2),
+            ], axis=1),
+            np.stack([
+                np.arange(self.size[0] + 2) - 1,
+                np.repeat(self.size[1], self.size[0] + 2),
+            ], axis=1),
+            np.stack([
+                np.repeat(-1, self.size[1]),
+                np.arange(self.size[1]),
+            ], axis=1),
+            np.stack([
+                np.repeat(self.size[0], self.size[1]),
+                np.arange(self.size[1]),
+            ], axis=1),
+        ])
+
+        for point in border_points:
+            try:
+                self.stdscr.addch(base_position[0] + point[0], base_position[1] + point[1], "@")
+            except curses.error as e:  # Ignore error when writing to bottom-right corner of window
+                pass
+
     def draw(self, snake, pellet):
         self.stdscr.clear()
 
@@ -110,15 +137,20 @@ class Game:
         if snake.length <= 3:
             self.stdscr.attron(curses.A_STANDOUT)
             message = "Hint: To move faster, repeatedly press or hold the arrow key."
-            self.stdscr.addstr(0, self.size[1] - len(message), message)
+            self.stdscr.addstr(0, gu.window_max(self.stdscr)[1] - len(message) + 1, message)
             self.stdscr.attroff(curses.A_STANDOUT)
+
+        base_position = gu.align(self.stdscr, self.size, gu.HorizontalAlignment.CENTER, gu.VerticalAlignment.TOP) + [2, 0]
+
+        # Draw borders
+        self.draw_borders(base_position)
 
         # Draw pellet
         if curses.has_colors():
             self.stdscr.attron(curses.color_pair(2))
 
         try:
-            self.stdscr.addch(pellet[0], pellet[1], "o")
+            self.stdscr.addch(base_position[0] + pellet[0], base_position[1] + pellet[1], "o")
         except curses.error as e:  # Ignore error when writing to bottom-right corner of window
             pass
 
@@ -131,7 +163,7 @@ class Game:
                 self.stdscr.attron(curses.color_pair(1))
 
             try:
-                self.stdscr.addch(cell[0], cell[1], "x")
+                self.stdscr.addch(base_position[0] + cell[0], base_position[1] + cell[1], "x")
             except curses.error as e:  # Ignore error when writing to bottom-right corner of window
                 pass
 
@@ -170,8 +202,6 @@ def curses_main(stdscr):
 
     show_game_over_screen(stdscr, score)
 
-    # TODO: For actual game, make window fixed size so you can't cheat by making the terminal window bigger (just don't
-    #  use LINES or COLS variables)
     # TODO: Allow option of borders on or off, i.e. to end game or just wrap around (respectively) when snake reaches
     #  edge of the screen
     # TODO: Refactor screens into separate classes (?)
