@@ -7,7 +7,7 @@
 
 Command-line version of the classic Snake game.
 
-![GIF showing gameplay](https://raw.githubusercontent.com/Ruben9922/snake-cmd/master/screenshot1.gif)
+![GIF showing gameplay](https://raw.githubusercontent.com/Ruben9922/snake-cmd/master/screenshot.gif)
 
 ## Installation
 
