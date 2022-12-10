@@ -27,4 +27,5 @@ setuptools.setup(
         'console_scripts': ['ruben-snake-cmd=snake_cmd:main'],
     },
     py_modules=['snake_cmd'],
+    install_requires=["numpy", "ruben-curses-game-utilities"],
 )
