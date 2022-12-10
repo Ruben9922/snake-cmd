@@ -101,31 +101,14 @@ class Game:
         return False, pellet
 
     def draw_borders(self, base_position):
-        # TODO: Replace this with a utility function for drawing a rectangle
-        border_points = np.row_stack([
-            np.stack([
-                np.arange(self.size[0] + 2) - 1,
-                np.repeat(-1, self.size[0] + 2),
-            ], axis=1),
-            np.stack([
-                np.arange(self.size[0] + 2) - 1,
-                np.repeat(self.size[1], self.size[0] + 2),
-            ], axis=1),
-            np.stack([
-                np.repeat(-1, self.size[1]),
-                np.arange(self.size[1]),
-            ], axis=1),
-            np.stack([
-                np.repeat(self.size[0], self.size[1]),
-                np.arange(self.size[1]),
-            ], axis=1),
-        ])
-
-        for point in border_points:
-            try:
-                self.stdscr.addch(base_position[0] + point[0], base_position[1] + point[1], "@")
-            except curses.error as e:  # Ignore error when writing to bottom-right corner of window
-                pass
+        # TODO: Maybe replace this with a utility function for drawing a rectangle
+        try:
+            self.stdscr.vline(base_position[0], base_position[1] - 1, "@", self.size[0])
+            self.stdscr.vline(base_position[0], base_position[1] + self.size[1], "@", self.size[0])
+            self.stdscr.hline(base_position[0] - 1, base_position[1] - 1, "@", self.size[1] + 2)
+            self.stdscr.hline(base_position[0] + self.size[0], base_position[1] - 1, "@", self.size[1] + 2)
+        except curses.error as e:  # Ignore error when writing to bottom-right corner of window
+            pass
 
     def draw(self, snake, pellet):
         self.stdscr.clear()
