@@ -102,13 +102,10 @@ class Game:
 
     def draw_borders(self, base_position):
         # TODO: Maybe replace this with a utility function for drawing a rectangle
-        try:
-            self.stdscr.vline(base_position[0], base_position[1] - 1, "@", self.size[0])
-            self.stdscr.vline(base_position[0], base_position[1] + self.size[1], "@", self.size[0])
-            self.stdscr.hline(base_position[0] - 1, base_position[1] - 1, "@", self.size[1] + 2)
-            self.stdscr.hline(base_position[0] + self.size[0], base_position[1] - 1, "@", self.size[1] + 2)
-        except curses.error as e:  # Ignore error when writing to bottom-right corner of window
-            pass
+        self.stdscr.vline(base_position[0], base_position[1] - 1, "@", self.size[0])
+        self.stdscr.vline(base_position[0], base_position[1] + self.size[1], "@", self.size[0])
+        self.stdscr.hline(base_position[0] - 1, base_position[1] - 1, "@", self.size[1] + 2)
+        self.stdscr.hline(base_position[0] + self.size[0], base_position[1] - 1, "@", self.size[1] + 2)
 
     def draw(self, snake, pellet):
         self.stdscr.clear()
