@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="ruben-snake-cmd",
-    version="0.2.3",
+    version="0.3.0",
     author="Ruben Dougall",
     author_email="info.ruebz999@gmail.com",
     description="Command-line version of the classic Snake game.",
