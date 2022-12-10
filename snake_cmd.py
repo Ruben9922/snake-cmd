@@ -4,10 +4,10 @@ import game_utilities as gu
 
 
 class Snake:
-    def __init__(self, initial_length):
+    def __init__(self, game, initial_length):
         self.cells = np.stack([
-            np.arange(initial_length) + (Game.max_size[0] // 2),
-            np.zeros(initial_length, dtype="int64") + (Game.max_size[1] // 2),
+            np.arange(initial_length) + (game.size[0] // 2),
+            np.zeros(initial_length, dtype="int64") + (game.size[1] // 2),
         ], axis=1)
         self.direction = np.array([-1, 0])
 
@@ -20,21 +20,21 @@ class Snake:
 
 
 class Game:
-    max_size = np.array([24, 80])
+    _max_size = np.array([24, 80])
 
     def __init__(self, stdscr):
         self.stdscr = stdscr
 
     @property
-    def window_size(self):
+    def size(self):
         return np.amin(np.stack([
             self.stdscr.getmaxyx(),
-            Game.max_size,
+            Game._max_size,
         ]), axis=0)
 
     def show(self, settings):
-        snake = Snake(1)
-        pellet = np.random.randint(Game.max_size, size=2)
+        snake = Snake(self, 1)
+        pellet = np.random.randint(self.size, size=2)
 
         key = None
         # getch return value of 27 corresponds to escape key - doesn't look like curses has a constant for this
@@ -82,9 +82,9 @@ class Game:
         current_front = snake.cells[0]
         new_front = current_front + snake.direction
         if not settings["snake_wrapping"].value\
-                and not (np.all(new_front >= gu.ZERO) and np.all(new_front < Game.max_size)):
+                and not (np.all(new_front >= gu.ZERO) and np.all(new_front < self.size)):
             return True, pellet
-        new_front = new_front % Game.max_size
+        new_front = new_front % self.size
         snake.cells = np.insert(snake.cells, 0, new_front, axis=0)
 
         # If the snake just "ate" (intersected with) a pellet:
@@ -94,7 +94,7 @@ class Game:
         # * Remove a cell to compensate for the one just added, so length of the snake stays the same
         # * Obviously leave the pellet where it is
         if (snake.cells == pellet).all(axis=1).any():
-            pellet = np.random.randint(Game.max_size, size=2)
+            pellet = np.random.randint(self.size, size=2)
         else:
             snake.cells = np.delete(snake.cells, -1, axis=0)
 
@@ -110,7 +110,7 @@ class Game:
         if snake.length <= 3:
             self.stdscr.attron(curses.A_STANDOUT)
             message = "Hint: To move faster, repeatedly press or hold the arrow key."
-            self.stdscr.addstr(0, Game.max_size[1] - len(message), message)
+            self.stdscr.addstr(0, self.size[1] - len(message), message)
             self.stdscr.attroff(curses.A_STANDOUT)
 
         # Draw pellet
