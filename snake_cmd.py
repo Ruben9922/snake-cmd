@@ -81,7 +81,7 @@ class Game:
         # Add a cell to the front of the snake, in the given direction
         current_front = snake.cells[0]
         new_front = current_front + snake.direction
-        if not settings["snake_wrapping"]["value"]\
+        if not settings["snake_wrapping"].value\
                 and not (np.all(new_front >= gu.ZERO) and np.all(new_front < Game.max_size)):
             return True, pellet
         new_front = new_front % Game.max_size
@@ -139,6 +139,13 @@ class Game:
                 self.stdscr.attroff(curses.color_pair(1))
 
 
+class Setting:
+    def __init__(self, name, key, value):
+        self.name = name
+        self.key = key
+        self.value = value
+
+
 def curses_main(stdscr):
     # Initialise colours
     curses.init_pair(1, curses.COLOR_CYAN, curses.COLOR_BLACK)
@@ -148,11 +155,7 @@ def curses_main(stdscr):
     curses.curs_set(1)
 
     settings = {
-        "snake_wrapping": {
-            "name": "Snake wraps around screen edge",
-            "key": "b",
-            "value": True
-        }
+        "snake_wrapping": Setting(name="Snake wraps around screen edge", key="b", value=True),
     }
     show_title_screen(stdscr, settings)
 
@@ -226,17 +229,17 @@ def show_settings_screen(stdscr, settings):
         gu.addstr_multiline_aligned(stdscr, [
             "Settings",
             ""
-        ] + [f"{x['key'].upper()} - {x['name']} ({x['value']})" for x in settings.values()] + [
-                                     "",
-                                     "Press any key to close this screen..."
-                                 ], gu.HorizontalAlignment.CENTER, gu.VerticalAlignment.CENTER)
+        ] + [f"{setting.key.upper()} - {setting.name} ({setting.value})" for setting in settings.values()] + [
+            "",
+            "Press any key to close this screen..."
+        ], gu.HorizontalAlignment.CENTER, gu.VerticalAlignment.CENTER)
 
         key = stdscr.getch()
-        setting = next((x for x in settings.values() if key == ord(x["key"])), None)
+        setting = next((setting for setting in settings.values() if key == ord(setting.key)), None)
         if setting is None:
             finished = True
         else:
-            setting["value"] = not setting["value"]
+            setting.value = not setting.value
 
 
 def show_game_over_screen(stdscr, score):
