@@ -22,10 +22,10 @@ setuptools.setup(
         "Natural Language :: English",
         "Topic :: Games/Entertainment :: Arcade",
     ],
-    python_requires='>=3.6',
+    python_requires=">=3.6",
     entry_points={
-        'console_scripts': ['ruben-snake-cmd=snake_cmd:main'],
+        "console_scripts": ["ruben-snake-cmd=snake_cmd:main"],
     },
-    py_modules=['snake_cmd'],
+    py_modules=["snake_cmd"],
     install_requires=["numpy", "ruben-curses-game-utilities"],
 )
