@@ -101,11 +101,20 @@ class Game:
         return False, pellet
 
     def draw_borders(self, base_position):
-        # TODO: Maybe replace this with a utility function for drawing a rectangle
-        self.stdscr.vline(base_position[0], base_position[1] - 1, "@", self.size[0])
-        self.stdscr.vline(base_position[0], base_position[1] + self.size[1], "@", self.size[0])
-        self.stdscr.hline(base_position[0] - 1, base_position[1] - 1, "@", self.size[1] + 2)
-        self.stdscr.hline(base_position[0] + self.size[0], base_position[1] - 1, "@", self.size[1] + 2)
+        # Draw lines
+        self.stdscr.vline(base_position[0], base_position[1] - 1, curses.ACS_VLINE, self.size[0])
+        self.stdscr.vline(base_position[0], base_position[1] + self.size[1], curses.ACS_VLINE, self.size[0])
+        self.stdscr.hline(base_position[0] - 1, base_position[1], curses.ACS_HLINE, self.size[1])
+        self.stdscr.hline(base_position[0] + self.size[0], base_position[1], curses.ACS_HLINE, self.size[1])
+
+        # Draw corners
+        self.stdscr.addch(base_position[0] - 1, base_position[1] - 1, curses.ACS_ULCORNER)
+        self.stdscr.addch(base_position[0] - 1, base_position[1] + self.size[1], curses.ACS_URCORNER)
+        self.stdscr.addch(base_position[0] + self.size[0], base_position[1] - 1, curses.ACS_LLCORNER)
+        try:
+            self.stdscr.addch(base_position[0] + self.size[0], base_position[1] + self.size[1], curses.ACS_LRCORNER)
+        except curses.error as e:  # Ignore error when writing to bottom-right corner of window
+            pass
 
     def draw(self, snake, pellet):
         self.stdscr.clear()
