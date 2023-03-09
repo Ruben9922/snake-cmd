@@ -4,7 +4,6 @@
 [![ruben-snake-cmd](https://snapcraft.io//ruben-snake-cmd/badge.svg)](https://snapcraft.io/ruben-snake-cmd)
 [![GitHub](https://img.shields.io/github/license/Ruben9922/snake-cmd)](https://github.com/Ruben9922/snake-cmd/blob/master/LICENSE)
 [![Publish Python Package](https://github.com/Ruben9922/snake-cmd/actions/workflows/publish.yml/badge.svg)](https://github.com/Ruben9922/snake-cmd/actions/workflows/publish.yml)
-[![Publish Python Package (Edge)](https://github.com/Ruben9922/snake-cmd/actions/workflows/publish-edge.yml/badge.svg)](https://github.com/Ruben9922/snake-cmd/actions/workflows/publish-edge.yml)
 
 Command-line version of the classic Snake game.
 
